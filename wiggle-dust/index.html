@@ -99,6 +99,8 @@ header p { margin: 6px 0 0; color: var(--muted); font-size: 18px; font-weight: 7
 .snd b { font-family: var(--font-display); font-weight: 400; font-size: clamp(17px, 3.6vw, 24px); line-height: 1; }
 .snd small { font-weight: 800; font-size: 12px; opacity: 0.7; }
 .snd .wave { width: 46%; height: 16px; }
+.snd .ico { font-size: clamp(24px, 5vw, 32px); line-height: 1; font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif; }
+.music-label { margin-top: 18px !important; }
 
 .row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
 .btn {
@@ -114,6 +116,38 @@ header p { margin: 6px 0 0; color: var(--muted); font-size: 18px; font-weight: 7
   width: 44px; height: 44px; border-radius: 50%; border: 3px solid var(--card); cursor: pointer;
   box-shadow: 0 0 0 2px var(--line); background: var(--c);
 }
+.shapes { display: flex; flex-wrap: wrap; gap: 8px; }
+.shp {
+  width: 52px; height: 52px; border-radius: 14px; border: 2px solid var(--line); background: var(--card);
+  font-size: 28px; line-height: 1; cursor: pointer; display: flex; align-items: center; justify-content: center;
+  font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", var(--font-body); padding: 0;
+  -webkit-tap-highlight-color: transparent; touch-action: manipulation;
+}
+.shp .grain { width: 12px; height: 12px; border-radius: 3px; background: #E2C58A; box-shadow: 9px 6px 0 -2px #E2C58A, -8px 7px 0 -3px #E2C58A, 6px -8px 0 -3px #E2C58A; }
+.shp.hop { animation: hop 0.35s cubic-bezier(.2, 1.8, .4, 1); }
+@keyframes hop { 0% { transform: scale(0.8) rotate(-8deg); } 100% { transform: scale(1) rotate(0); } }
+@media (prefers-reduced-motion: reduce) { .shp.hop { animation: none; } }
+.shp[aria-pressed="true"] { border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 30%, transparent); }
+.shp:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.shape-row { margin-top: 12px; }
+.custom { display: flex; align-items: center; gap: 8px; white-space: nowrap; font-weight: 800; color: var(--muted); }
+.custom input[type="text"] { width: 64px; max-width: 64px; font-size: 22px; text-align: center; padding: 8px 10px; }
+.surprise {
+  border: 0; color: #1A1A1A; font-family: var(--font-display); font-weight: 400; font-size: 21px; padding: 12px 20px;
+  background: linear-gradient(90deg, #FF4D4D, #FF9F43, #FFE45C, #7EE0B0, #7FB2FF, #C9A2FF);
+  box-shadow: 0 5px 0 0 #8A5BC4;
+}
+.surprise:active { transform: translateY(4px); box-shadow: 0 1px 0 0 #8A5BC4; }
+.surprise.spin { animation: wob 0.25s ease-in-out infinite alternate; }
+@keyframes wob { from { transform: rotate(-4deg) scale(1.03); } to { transform: rotate(4deg) scale(1.03); } }
+.slot {
+  position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; pointer-events: none;
+  font-size: clamp(90px, 30vw, 220px); line-height: 1; background: rgba(10, 14, 24, 0.55);
+  font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif;
+}
+.slot.pop { animation: pop 0.6s cubic-bezier(.2, 1.6, .4, 1); }
+@keyframes pop { 0% { transform: scale(0.4); } 100% { transform: scale(1); } }
+@media (prefers-reduced-motion: reduce) { .surprise.spin, .slot.pop { animation: none; } }
 .sw[aria-pressed="true"] { box-shadow: 0 0 0 3px var(--fg); }
 .sw:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
 
@@ -163,6 +197,23 @@ input[type="text"]:focus-visible { outline: 3px solid var(--accent); outline-off
 .mic-title { font-family: var(--font-display); font-size: 24px; line-height: 1.1; margin: 0; text-wrap: balance; }
 .mic-side .hint { margin: 0; }
 @media (prefers-reduced-motion: reduce) { .mic, .mic::after { transition: none; } }
+.credits { color: var(--muted); font-size: 12px; line-height: 1.5; max-width: 70ch; }
+.credits a { color: inherit; }
+/* Keep the plate in view while the controls scroll */
+.plate-box { position: sticky; top: max(12px, env(safe-area-inset-top, 0px)); z-index: 5; }
+@media (max-width: 760px) {
+  .plate-box {
+    top: 0; background: var(--bg);
+    margin-left: calc(-1 * max(16px, env(safe-area-inset-left, 0px)));
+    margin-right: calc(-1 * max(16px, env(safe-area-inset-right, 0px)));
+    padding: max(8px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) 6px max(16px, env(safe-area-inset-left, 0px));
+    box-shadow: 0 8px 14px -12px rgba(10, 14, 30, 0.45);
+    gap: 4px;
+  }
+  .plate-box > .plate, .plate-box > .readout { width: min(100%, 40vh); width: min(100%, 40svh); margin-inline: auto; }
+  .readout .hz { font-size: 22px; }
+  .readout .what { font-size: 13px; }
+}
 </style>
 </head>
 <body>
@@ -175,7 +226,7 @@ input[type="text"]:focus-visible { outline: 3px solid var(--accent); outline-off
 
   <div class="main">
     <section class="plate-box" aria-label="Vibrating plate">
-      <div class="plate"><canvas id="plate" aria-label="Sand pattern made by sound" role="img"></canvas></div>
+      <div class="plate"><canvas id="plate" aria-label="Sand pattern made by sound" role="img"></canvas><div class="slot" id="slot" hidden aria-hidden="true"></div></div>
       <div class="readout">
         <span class="hz" id="hz">196 Hz</span>
         <span class="what" id="what">Example: the Hum button</span>
@@ -203,6 +254,17 @@ input[type="text"]:focus-visible { outline: 3px solid var(--accent); outline-off
         <p class="label">Or press a sound</p>
         <div class="sounds" id="sounds"></div>
         <p class="hint">Low sounds make big, simple shapes. High sounds make tiny, busy ones.</p>
+        <p class="label music-label">Silly sounds</p>
+        <div class="sounds" id="silly"></div>
+      </div>
+
+      <div>
+        <p class="label">Sand shape</p>
+        <div class="shapes" id="shapes"></div>
+        <div class="row shape-row">
+          <label class="custom" for="custom">Your own:<input type="text" id="custom" maxlength="16" placeholder="🦕" aria-label="Type one emoji or letter" autocomplete="off" enterkeyhint="done"></label>
+          <button class="btn surprise" id="surprise" type="button">Surprise me!</button>
+        </div>
       </div>
 
       <div>
@@ -219,6 +281,9 @@ input[type="text"]:focus-visible { outline: 3px solid var(--accent); outline-off
       </div>
     </section>
   </div>
+  <footer class="credits">
+    Sound effects from <a href="https://developers.meta.com/horizon/downloads/package/oculus-audio-pack-1/" target="_blank" rel="noopener">“Oculus Audio Pack 01”</a> by Oculus VR, LLC, licensed under <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a> (trimmed and converted to MP3). Fart recordings from BigSoundBank, CC0.
+  </footer>
 </div>
 
 <div class="overlay" id="overlay" hidden>
@@ -292,11 +357,43 @@ input[type="text"]:focus-visible { outline: 3px solid var(--accent); outline-off
     cv.width = Math.max(1, Math.round(r.width * d)); cv.height = Math.max(1, Math.round(r.height * d));
     dirty = true;
   }
+  const RAINBOW = ['#FF4D4D', '#FF9F43', '#FFE45C', '#7EE0B0', '#7FB2FF', '#C9A2FF'];
+  let shape = 'dot';
+  const spriteCache = new Map();
+  function sprite(ch, ps, color) {
+    const key = ch + '|' + ps + '|' + color;
+    let c = spriteCache.get(key);
+    if (!c) {
+      c = document.createElement('canvas');
+      const s = Math.ceil(ps * 1.3); c.width = c.height = s;
+      const x = c.getContext('2d');
+      x.font = ps + 'px "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", "Bagel Fat One", sans-serif';
+      x.textAlign = 'center'; x.textBaseline = 'middle';
+      x.fillStyle = color === 'rainbow' ? '#FFFFFF' : color;
+      x.fillText(ch, s / 2, s / 2 + ps * 0.06);
+      spriteCache.set(key, c);
+      if (spriteCache.size > 30) spriteCache.delete(spriteCache.keys().next().value);
+    }
+    return c;
+  }
   function drawParticles(ctx, x0, y0, W, size, color) {
-    ctx.fillStyle = color;
-    ctx.globalAlpha = 0.9;
     const pad = W * 0.04, inner = W - pad * 2;
-    for (let i = 0; i < N; i++) ctx.fillRect(x0 + pad + px[i] * inner - size / 2, y0 + pad + py[i] * inner - size / 2, size, size);
+    if (shape !== 'dot') {
+      const ps = Math.max(8, Math.round(W / 46)), sp = sprite(shape, ps, color), h = sp.width / 2;
+      const count = Math.min(N, 1600);
+      for (let i = 0; i < count; i++) ctx.drawImage(sp, x0 + pad + px[i] * inner - h, y0 + pad + py[i] * inner - h);
+      return;
+    }
+    ctx.globalAlpha = 0.9;
+    if (color === 'rainbow') {
+      for (let c = 0; c < RAINBOW.length; c++) {
+        ctx.fillStyle = RAINBOW[c];
+        for (let i = c; i < N; i += RAINBOW.length) ctx.fillRect(x0 + pad + px[i] * inner - size / 2, y0 + pad + py[i] * inner - size / 2, size, size);
+      }
+    } else {
+      ctx.fillStyle = color;
+      for (let i = 0; i < N; i++) ctx.fillRect(x0 + pad + px[i] * inner - size / 2, y0 + pad + py[i] * inner - size / 2, size, size);
+    }
     ctx.globalAlpha = 1;
   }
   function drawBolt(ctx, cx, cy, r) {
@@ -315,7 +412,7 @@ input[type="text"]:focus-visible { outline: 3px solid var(--accent); outline-off
   let drive = 0, settleFrames = 0, dirty = true;
   function loop() {
     if (playing) { step(drive); dirty = true; }
-    else if (settleFrames > 0) { settleFrames--; step(Math.max(0.35, settleFrames / 110)); dirty = true; }
+    else if (settleFrames > 0) { settleFrames--; step(Math.min(1, Math.max(0.35, settleFrames / 110))); dirty = true; }
     if (playing) analyse();
     if (dirty) { draw(); dirty = false; }
     requestAnimationFrame(loop);
@@ -333,6 +430,7 @@ input[type="text"]:focus-visible { outline: 3px solid var(--accent); outline-off
       fbuf = new Float32Array(analyser.frequencyBinCount); tbuf = new Float32Array(analyser.fftSize);
     }
     if (ac.state === 'suspended') ac.resume();
+    warmClips();
     return ac;
   }
 
@@ -342,7 +440,15 @@ input[type="text"]:focus-visible { outline: 3px solid var(--accent); outline-off
     nodes = [];
     document.querySelectorAll('.snd.on').forEach(b => b.classList.remove('on'));
   }
+  function kick(amt) {
+    for (let k = 0; k < N; k++) {
+      let x = px[k] + (Math.random() - 0.5) * amt, y = py[k] + (Math.random() - 0.5) * amt;
+      px[k] = x < 0 ? -x : x > 1 ? 2 - x : x; py[k] = y < 0 ? -y : y > 1 ? 2 - y : y;
+    }
+    dirty = true;
+  }
   function beginTracking(what) {
+    kick(0.06);
     playing = true; label = what;
     hist = new Float32Array(MODES.length); freqSum = new Float32Array(MODES.length);
     cand = -1; candCount = 0; drive = 0.5;
@@ -452,6 +558,140 @@ input[type="text"]:focus-visible { outline: 3px solid var(--accent); outline-off
   function setStatus(t, err) { statusEl.textContent = t; statusEl.classList.toggle('err', !!err); }
   let lastHz = 196, lastWhat = 'Hum';
 
+  const SILLY = [
+    { id: 'fart', name: 'Fart', hint: 'toot!', color: '#C8A27A', ico: '💨' },
+    { id: 'burp', name: 'Burp', hint: 'excuse me', color: '#9FE07E', ico: '🥤' },
+    { id: 'boing', name: 'Boing', hint: 'bouncy', color: '#FFB86B', ico: '🦘' },
+    { id: 'pew', name: 'Pew Pew', hint: 'laser', color: '#7FD8FF', ico: '🔫' },
+    { id: 'quack', name: 'Quack', hint: 'duck', color: '#FFE45C', ico: '🦆' },
+    { id: 'monster', name: 'Monster', hint: 'big laugh', color: '#B98CFF', ico: '👹' },
+  ];
+  function envelope(g, t, dur, peak, att) {
+    g.gain.setValueAtTime(0.0001, t); g.gain.linearRampToValueAtTime(peak, t + att);
+    g.gain.setValueAtTime(peak, t + Math.max(att, dur - 0.12)); g.gain.linearRampToValueAtTime(0.0001, t + dur);
+  }
+  // ---------- Real recordings ----------
+  const CLIPS = {
+    fart: ['fart1', 'fart2', 'fart3', 'fart4', 'fart5', 'fart6'], burp: ['burp1', 'burp2', 'burp3'],
+    boing: ['boing1', 'boing2', 'boing3', 'boing4'], pew: ['laser1', 'laser2'], quack: ['quack'],
+    monster: ['monster1', 'monster2', 'monster3'], woof: ['woof'], oink: ['oink'],
+  };
+  const clipCache = new Map();
+  function loadClip(name) {
+    if (!clipCache.has(name)) {
+      const p = fetch('sounds/' + name + '.mp3')
+        .then(r => { if (!r.ok) throw new Error('missing'); return r.arrayBuffer(); })
+        .then(b => ensureCtx().decodeAudioData(b));
+      p.catch(() => clipCache.delete(name));
+      clipCache.set(name, p);
+    }
+    return clipCache.get(name);
+  }
+  let clipsWarm = false;
+  function warmClips() {
+    if (clipsWarm) return; clipsWarm = true;
+    Object.values(CLIPS).flat().concat('fart-legendary').forEach(n => loadClip(n).catch(() => {}));
+  }
+  function pickClip(id) {
+    if (id === 'fart' && Math.random() < 0.08) return 'fart-legendary';
+    const list = CLIPS[id]; return list[Math.floor(Math.random() * list.length)];
+  }
+  function playShort(id, fallback) {
+    loadClip(pickClip(id)).then(buf => {
+      const ctx = ensureCtx(), src = ctx.createBufferSource();
+      src.buffer = buf; src.connect(master); src.start();
+    }).catch(() => { if (fallback) fallback(); });
+  }
+  async function playFx(s, btn) {
+    const ctx = ensureCtx();
+    if (typeof endRec === 'function') endRec();
+    stopCurrent(); const id = ++playId;
+    btn.classList.add('on'); setStatus('');
+    let buf = null;
+    try { buf = await loadClip(pickClip(s.id)); } catch (e) {}
+    if (id !== playId) return;
+    if (!buf) { synthFx(s, btn); return; }
+    beginTracking('Playing ' + s.name);
+    const out = ctx.createGain(); out.connect(analyser); out.connect(master);
+    const shots = s.id === 'pew' ? 2 : 1;
+    let last = null;
+    for (let i = 0; i < shots; i++) {
+      const src = ctx.createBufferSource(); src.buffer = buf; src.connect(out);
+      src.start(ctx.currentTime + 0.02 + i * 0.3); nodes.push(src); last = src;
+    }
+    last.onended = () => finish(id);
+  }
+  function synthFx(s, btn) {
+    const ctx = ensureCtx();
+    if (typeof endRec === 'function') endRec();
+    stopCurrent(); const id = ++playId;
+    btn.classList.add('on'); setStatus('');
+    beginTracking('Playing ' + s.name);
+    const t = ctx.currentTime + 0.02;
+    const out = ctx.createGain(); out.connect(analyser); out.connect(master);
+    const oscs = [];
+    const mk = (type, f) => { const o = ctx.createOscillator(); o.type = type; o.frequency.setValueAtTime(f, t); oscs.push(o); nodes.push(o); return o; };
+    const lfo = (rate, depth, target) => { const l = mk('sine', rate), g = ctx.createGain(); g.gain.setValueAtTime(depth, t); l.connect(g); g.connect(target); return g; };
+    const filt = (type, f, q) => { const b = ctx.createBiquadFilter(); b.type = type; b.frequency.value = f; if (q) b.Q.value = q; b.connect(out); return b; };
+    let dur = 1, main;
+    if (s.id === 'fart') {
+      const big = Math.random() < 0.6; dur = big ? 1.4 : 0.7;
+      const f0 = big ? 95 + Math.random() * 30 : 170 + Math.random() * 60;
+      main = mk('sawtooth', f0); main.frequency.exponentialRampToValueAtTime(f0 * 0.55, t + dur);
+      lfo(big ? 24 : 36, f0 * 0.28, main.frequency);
+      main.connect(filt('lowpass', big ? 650 : 950));
+      envelope(out, t, dur, 0.55, 0.03);
+    } else if (s.id === 'burp') {
+      dur = 1.0;
+      main = mk('sawtooth', 135); main.frequency.exponentialRampToValueAtTime(88, t + dur);
+      lfo(11, 0.25, out.gain);
+      main.connect(filt('bandpass', 430, 2.5));
+      envelope(out, t, dur, 1.4, 0.05);
+    } else if (s.id === 'boing') {
+      dur = 1.4;
+      main = mk('triangle', 140); main.frequency.exponentialRampToValueAtTime(420, t + 0.12);
+      const vib = lfo(15, 0.0001, main.frequency);
+      vib.gain.setValueAtTime(130, t + 0.12); vib.gain.exponentialRampToValueAtTime(1, t + dur);
+      main.connect(out);
+      envelope(out, t, dur, 0.55, 0.02);
+    } else if (s.id === 'pew') {
+      const shots = 4, gap = 0.26; dur = shots * gap;
+      main = mk('square', 1500); main.connect(out);
+      out.gain.setValueAtTime(0.0001, t);
+      for (let i = 0; i < shots; i++) {
+        const ti = t + i * gap;
+        main.frequency.setValueAtTime(1500, ti); main.frequency.exponentialRampToValueAtTime(220, ti + 0.2);
+        out.gain.setValueAtTime(0.0001, ti); out.gain.linearRampToValueAtTime(0.22, ti + 0.01); out.gain.exponentialRampToValueAtTime(0.0001, ti + 0.22);
+      }
+    } else if (s.id === 'quack') {
+      const n = 3, gap = 0.3; dur = n * gap;
+      main = mk('sawtooth', 600); main.connect(filt('bandpass', 1100, 4));
+      out.gain.setValueAtTime(0.0001, t);
+      for (let i = 0; i < n; i++) {
+        const ti = t + i * gap;
+        main.frequency.setValueAtTime(640, ti); main.frequency.exponentialRampToValueAtTime(470, ti + 0.17);
+        out.gain.setValueAtTime(0.0001, ti); out.gain.linearRampToValueAtTime(1.1, ti + 0.02); out.gain.exponentialRampToValueAtTime(0.0001, ti + 0.2);
+      }
+    } else {
+      dur = 2.1;
+      main = mk('sawtooth', 60); const second = mk('sawtooth', 63);
+      for (const o of [main, second]) { o.frequency.exponentialRampToValueAtTime(o === main ? 95 : 99, t + 1.2); o.frequency.exponentialRampToValueAtTime(68, t + dur); }
+      const lp = filt('lowpass', 420); main.connect(lp); second.connect(lp);
+      lfo(9, 0.18, out.gain);
+      envelope(out, t, dur, 0.45, 0.15);
+    }
+    for (const o of oscs) { o.start(t); o.stop(t + dur + 0.05); }
+    main.onended = () => finish(id);
+  }
+  const sillyEl = document.getElementById('silly');
+  for (const s of SILLY) {
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'snd'; b.style.setProperty('--c', s.color);
+    b.setAttribute('aria-label', s.name + ' sound, ' + s.hint);
+    b.innerHTML = '<span class="ico" aria-hidden="true">' + s.ico + '</span><b>' + s.name + '</b><small>' + s.hint + '</small>';
+    b.addEventListener('click', () => playFx(s, b));
+    sillyEl.appendChild(b);
+  }
   const soundsEl = document.getElementById('sounds');
   for (const s of SOUNDS) {
     const b = document.createElement('button');
@@ -513,7 +753,7 @@ input[type="text"]:focus-visible { outline: 3px solid var(--accent); outline-off
     setStatus('');
     beginTracking('Playing your sound');
     whatEl.textContent = 'Listening…';
-    autoStop = setTimeout(stopRec, 8000);
+    autoStop = setTimeout(stopRec, 30000);
   }
   function stopRec() { if (endRec()) finish(recId); }
   micBtn.addEventListener('pointerdown', e => {
@@ -542,18 +782,209 @@ input[type="text"]:focus-visible { outline: 3px solid var(--accent); outline-off
   });
   againBtn.addEventListener('click', () => { if (recBlob) playFile(recBlob, 'Playing your sound'); });
 
-  const SANDS = [['Sand', '#F2D9A6'], ['Mint', '#8EF0C8'], ['Bubblegum', '#FF9ECF'], ['Sky', '#8CC8FF'], ['Sunshine', '#FFE45C']];
+  const SANDS = [['Sand', '#F2D9A6'], ['Red', '#FF3B3B'], ['Orange', '#FF9F43'], ['Sunshine', '#FFE45C'], ['Mint', '#8EF0C8'],
+    ['Sky', '#8CC8FF'], ['Purple', '#B98CFF'], ['Bubblegum', '#FF9ECF'], ['White', '#FFFFFF'], ['Rainbow', 'rainbow']];
   const swEl = document.getElementById('swatches');
-  SANDS.forEach(([nm, c], i) => {
+  function applyColor(c) {
+    sand = c; dirty = true;
+    swEl.querySelectorAll('.sw').forEach(x => x.setAttribute('aria-pressed', x.dataset.c === c ? 'true' : 'false'));
+  }
+  SANDS.forEach(([nm, c]) => {
     const b = document.createElement('button');
-    b.type = 'button'; b.className = 'sw'; b.style.setProperty('--c', c);
-    b.setAttribute('aria-label', nm + ' sand'); b.setAttribute('aria-pressed', i === 0 ? 'true' : 'false');
-    b.addEventListener('click', () => {
-      sand = c; dirty = true;
-      swEl.querySelectorAll('.sw').forEach(x => x.setAttribute('aria-pressed', x === b ? 'true' : 'false'));
-    });
+    b.type = 'button'; b.className = 'sw'; b.dataset.c = c;
+    if (c === 'rainbow') b.style.background = 'conic-gradient(#FF4D4D, #FF9F43, #FFE45C, #7EE0B0, #7FB2FF, #C9A2FF, #FF4D4D)';
+    else b.style.setProperty('--c', c);
+    b.setAttribute('aria-label', nm + ' sand');
+    b.addEventListener('click', () => { customEl.value = ''; setShape('dot', true); applyColor(c); });
     swEl.appendChild(b);
   });
+  applyColor(sand);
+
+  // ---------- Silly sounds ----------
+  function blip(f, d) {
+    const c = ensureCtx(), t = c.currentTime, o = c.createOscillator(), g = c.createGain();
+    o.type = 'square'; o.frequency.value = f;
+    g.gain.setValueAtTime(0.06, t); g.gain.exponentialRampToValueAtTime(0.001, t + d);
+    o.connect(g); g.connect(master); o.start(t); o.stop(t + d + 0.02);
+  }
+  function tada() {
+    const c = ensureCtx();
+    [523, 659, 784, 1047].forEach((f, i) => {
+      const t = c.currentTime + i * 0.07, o = c.createOscillator(), g = c.createGain();
+      o.type = 'triangle'; o.frequency.value = f;
+      g.gain.setValueAtTime(0.0001, t); g.gain.linearRampToValueAtTime(0.18, t + 0.02); g.gain.exponentialRampToValueAtTime(0.001, t + 0.5);
+      o.connect(g); g.connect(master); o.start(t); o.stop(t + 0.55);
+    });
+  }
+  function fart() {
+    const c = ensureCtx(), t = c.currentTime + 0.01;
+    const o = c.createOscillator(), g = c.createGain(), lp = c.createBiquadFilter(), l = c.createOscillator(), lg = c.createGain();
+    o.type = 'sawtooth'; o.frequency.setValueAtTime(110, t); o.frequency.exponentialRampToValueAtTime(55, t + 0.7);
+    l.frequency.value = 22; lg.gain.value = 18; l.connect(lg); lg.connect(o.frequency);
+    lp.type = 'lowpass'; lp.frequency.value = 500;
+    g.gain.setValueAtTime(0.0001, t); g.gain.linearRampToValueAtTime(0.35, t + 0.04); g.gain.setValueAtTime(0.3, t + 0.5); g.gain.exponentialRampToValueAtTime(0.001, t + 0.75);
+    o.connect(lp); lp.connect(g); g.connect(master);
+    o.start(t); l.start(t); o.stop(t + 0.8); l.stop(t + 0.8);
+  }
+
+  // ---------- A funny sound for every emoji ----------
+  function tone(type, f0, f1, t0, d, peak, o) {
+    o = o || {};
+    const ctx = ensureCtx(), t = ctx.currentTime + 0.01 + t0;
+    const osc = ctx.createOscillator(), g = ctx.createGain();
+    osc.type = type; osc.frequency.setValueAtTime(f0, t);
+    if (f1 && f1 !== f0) osc.frequency.exponentialRampToValueAtTime(f1, t + d);
+    let last = osc;
+    if (o.filter) {
+      const b = ctx.createBiquadFilter(); b.type = o.filter[0]; b.frequency.value = o.filter[1];
+      if (o.filter[2]) b.Q.value = o.filter[2];
+      osc.connect(b); last = b;
+    }
+    last.connect(g); g.connect(master);
+    const extra = [];
+    if (o.vib) { const l = ctx.createOscillator(), lg = ctx.createGain(); l.frequency.value = o.vib[0]; lg.gain.value = o.vib[1]; l.connect(lg); lg.connect(osc.frequency); extra.push(l); }
+    if (o.am) { const l = ctx.createOscillator(), lg = ctx.createGain(); l.frequency.value = o.am; lg.gain.value = peak * 0.8; l.connect(lg); lg.connect(g.gain); extra.push(l); }
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.linearRampToValueAtTime(peak, t + Math.min(0.02, d / 4));
+    g.gain.setValueAtTime(peak, t + d * 0.6);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + d);
+    for (const n of [osc, ...extra]) { n.start(t); n.stop(t + d + 0.05); }
+  }
+  let noiseBuf = null;
+  function noise(t0, d, peak, filter) {
+    const ctx = ensureCtx();
+    if (!noiseBuf) {
+      noiseBuf = ctx.createBuffer(1, ctx.sampleRate, ctx.sampleRate);
+      const a = noiseBuf.getChannelData(0); for (let i = 0; i < a.length; i++) a[i] = Math.random() * 2 - 1;
+    }
+    const t = ctx.currentTime + 0.01 + t0, src = ctx.createBufferSource(), b = ctx.createBiquadFilter(), g = ctx.createGain();
+    src.buffer = noiseBuf; src.loop = true;
+    b.type = filter[0]; b.frequency.value = filter[1];
+    g.gain.setValueAtTime(0.0001, t); g.gain.linearRampToValueAtTime(peak, t + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, t + d);
+    src.connect(b); b.connect(g); g.connect(master);
+    src.start(t); src.stop(t + d + 0.05);
+  }
+  const pop = () => tone('sine', 500, 1300, 0, 0.09, 0.3);
+  const EMOJI_SFX = {
+    'dot': () => noise(0, 0.45, 0.12, ['highpass', 3500]),
+    '😂': () => { for (let i = 0; i < 5; i++) tone('sawtooth', 460 - i * 28, 360 - i * 28, i * 0.15, 0.11, 0.5, { filter: ['bandpass', 1000, 3] }); },
+    '⭐': () => [1568, 2093, 2637, 3136, 4186].forEach((f, i) => tone('sine', f, f, i * 0.06, 0.4, 0.12)),
+    '🦖': () => { tone('sawtooth', 80, 160, 0, 0.35, 0.35, { filter: ['lowpass', 700] }); tone('sawtooth', 160, 55, 0.35, 0.7, 0.35, { filter: ['lowpass', 700], vib: [30, 20] }); noise(0, 1, 0.18, ['lowpass', 900]); },
+    '🍕': () => { for (let i = 0; i < 3; i++) tone('square', 240, 140, i * 0.2, 0.14, 0.18, { filter: ['lowpass', 800] }); },
+    '🐸': () => { tone('sawtooth', 170, 240, 0, 0.15, 0.4, { am: 45, filter: ['bandpass', 700, 2] }); tone('sawtooth', 190, 290, 0.22, 0.2, 0.4, { am: 45, filter: ['bandpass', 700, 2] }); },
+    '👻': () => { tone('sine', 280, 540, 0, 0.6, 0.3, { vib: [5, 25] }); tone('sine', 540, 240, 0.6, 0.9, 0.3, { vib: [5, 25] }); },
+    '❤️': () => [0, 0.18, 0.75, 0.93].forEach(t0 => tone('sine', 95, 45, t0, 0.16, 0.8)),
+    '🦄': () => { tone('sine', 600, 2400, 0, 0.7, 0.14, { vib: [12, 40] }); [1319, 1760, 2349, 3136].forEach((f, i) => tone('triangle', f, f, 0.3 + i * 0.08, 0.45, 0.1)); },
+    '🍌': () => { tone('sine', 1400, 240, 0, 0.55, 0.3); tone('triangle', 230, 110, 0.6, 0.16, 0.45); },
+    '🚀': () => { noise(0, 1.3, 0.25, ['lowpass', 1200]); tone('sawtooth', 90, 1100, 0.1, 1.1, 0.15, { filter: ['lowpass', 1600] }); },
+    '🦆': () => { for (let i = 0; i < 2; i++) tone('sawtooth', 640, 470, i * 0.25, 0.18, 0.9, { filter: ['bandpass', 1100, 4] }); },
+    '🐶': () => { tone('sawtooth', 430, 300, 0, 0.12, 0.6, { filter: ['bandpass', 800, 2] }); tone('sawtooth', 450, 310, 0.2, 0.12, 0.6, { filter: ['bandpass', 800, 2] }); },
+    '🐱': () => { tone('sawtooth', 450, 720, 0, 0.25, 0.4, { filter: ['bandpass', 1200, 3] }); tone('sawtooth', 720, 420, 0.25, 0.35, 0.4, { filter: ['bandpass', 1200, 3], vib: [6, 15] }); },
+    '🐷': () => { for (let i = 0; i < 2; i++) tone('sawtooth', 260, 180, i * 0.2, 0.14, 0.7, { am: 60, filter: ['bandpass', 600, 2] }); },
+    '🐝': () => tone('sawtooth', 220, 250, 0, 0.9, 0.14, { vib: [9, 18], filter: ['lowpass', 1500] }),
+    '🤖': () => [880, 660, 990, 523].forEach((f, i) => tone('square', f, f, i * 0.11, 0.09, 0.12)),
+    '👽': () => tone('sine', 500, 900, 0, 0.9, 0.25, { vib: [14, 200] }),
+    '🎈': () => { tone('sine', 900, 1600, 0, 0.4, 0.15, { vib: [20, 60] }); noise(0.45, 0.08, 0.6, ['highpass', 1500]); },
+    '🐳': () => tone('sine', 180, 320, 0, 1.2, 0.4, { vib: [3, 30] }),
+    '🐙': () => { for (let i = 0; i < 4; i++) tone('sine', 300 + i * 90, 150 + i * 90, i * 0.1, 0.12, 0.3); },
+    '🍩': () => tone('sine', 220, 880, 0, 0.3, 0.3, { vib: [25, 50] }),
+    '🦷': () => tone('sine', 2200, 2200, 0, 0.6, 0.15),
+    '🧦': () => noise(0, 0.6, 0.15, ['bandpass', 600]),
+    '🐌': () => tone('sine', 300, 120, 0, 1.4, 0.25, { vib: [2, 15] }),
+    '🤡': () => { tone('sine', 700, 1400, 0, 0.12, 0.3); tone('sine', 1400, 700, 0.15, 0.12, 0.3); tone('sine', 700, 1400, 0.3, 0.12, 0.3); },
+    '🍔': () => { tone('square', 200, 120, 0, 0.15, 0.2, { filter: ['lowpass', 700] }); tone('square', 180, 110, 0.22, 0.15, 0.2, { filter: ['lowpass', 700] }); },
+    '👀': () => { tone('sine', 900, 900, 0, 0.08, 0.2); tone('sine', 1200, 1200, 0.25, 0.08, 0.2); },
+    '🧠': () => tone('sine', 400, 1200, 0, 0.5, 0.25, { vib: [18, 120] }),
+    '🥦': () => noise(0, 0.15, 0.4, ['bandpass', 2500]),
+    '🦀': () => { for (let i = 0; i < 4; i++) noise(i * 0.12, 0.05, 0.5, ['highpass', 2500]); },
+    '🧀': () => tone('triangle', 600, 1000, 0, 0.25, 0.25),
+    '🌮': () => { noise(0, 0.12, 0.5, ['bandpass', 3000]); noise(0.18, 0.12, 0.5, ['bandpass', 3000]); },
+    '🦕': () => tone('sawtooth', 70, 120, 0, 1.2, 0.3, { filter: ['lowpass', 500], vib: [4, 10] }),
+    '🍦': () => tone('sine', 1000, 1600, 0, 0.4, 0.2, { vib: [10, 40] }),
+    '🦩': () => { tone('sawtooth', 900, 700, 0, 0.2, 0.3, { filter: ['bandpass', 1500, 3] }); tone('sawtooth', 950, 720, 0.25, 0.2, 0.3, { filter: ['bandpass', 1500, 3] }); },
+    '🍓': () => tone('triangle', 800, 1200, 0, 0.15, 0.3),
+    '🦔': () => { for (let i = 0; i < 3; i++) tone('sine', 1500, 1800, i * 0.08, 0.05, 0.2); },
+    '🐧': () => { for (let i = 0; i < 3; i++) tone('square', 500, 350, i * 0.16, 0.1, 0.12, { filter: ['lowpass', 1200] }); },
+  };
+
+  // ---------- Sand shapes ----------
+  const SHAPES = [['dot', 'Sand grains'], ['💩', 'Poop'], ['😂', 'Laughing face'], ['⭐', 'Star'], ['🦖', 'Dinosaur'], ['🍕', 'Pizza'],
+    ['🐸', 'Frog'], ['👻', 'Ghost'], ['❤️', 'Heart'], ['🦄', 'Unicorn'], ['🍌', 'Banana'], ['🚀', 'Rocket']];
+  const EXTRA = ['🐙', '🍩', '🦷', '🧦', '🐌', '🦆', '🤡', '🍔', '🐷', '👀', '🧠', '🥦', '🦀', '🐝', '🧀', '🌮', '🐶', '🐱', '🦕', '🍦', '🎈', '🤖', '👽', '🦩', '🐳', '🍓', '🦔', '🐧'];
+  const shapesEl = document.getElementById('shapes'), customEl = document.getElementById('custom');
+  function setShape(ch, silent) {
+    shape = ch; dirty = true;
+    shapesEl.querySelectorAll('.shp').forEach(b => b.setAttribute('aria-pressed', b.dataset.shape === ch ? 'true' : 'false'));
+    if (!silent) {
+      const CLIP_FOR = { '💩': 'fart', '🦆': 'quack', '🐶': 'woof', '🐷': 'oink' };
+      const fx = ch === '💩' ? fart : (EMOJI_SFX[ch] || pop);
+      if (CLIP_FOR[ch]) playShort(CLIP_FOR[ch], fx); else { try { fx(); } catch (e) {} }
+      kick(0.05); settleFrames = Math.max(settleFrames, 45);
+      const btn = shapesEl.querySelector('.shp[aria-pressed="true"]');
+      if (btn) { btn.classList.remove('hop'); void btn.offsetWidth; btn.classList.add('hop'); }
+    }
+  }
+  SHAPES.forEach(([ch, nm]) => {
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'shp'; b.dataset.shape = ch;
+    b.setAttribute('aria-label', nm);
+    if (ch === 'dot') b.innerHTML = '<span class="grain" aria-hidden="true"></span>'; else b.textContent = ch;
+    b.addEventListener('click', () => { customEl.value = ''; setShape(ch); });
+    shapesEl.appendChild(b);
+  });
+  setShape('dot', true);
+  const lastChar = v => {
+    if (!v) return '';
+    const parts = (window.Intl && Intl.Segmenter) ? Array.from(new Intl.Segmenter().segment(v), x => x.segment) : Array.from(v);
+    return parts.length ? parts[parts.length - 1] : '';
+  };
+  customEl.addEventListener('input', () => {
+    const ch = lastChar(customEl.value.replace(/\s+/g, ''));
+    if (customEl.value !== ch) customEl.value = ch;
+    if (ch) setShape(ch); else setShape('dot', true);
+  });
+
+  // ---------- Surprise me ----------
+  const slotEl = document.getElementById('slot'), surpriseBtn = document.getElementById('surprise');
+  const idxToFreq = i => Math.exp(Math.log(F_LO) + (i / (MODES.length - 1)) * (Math.log(F_HI) - Math.log(F_LO)));
+  const CHEERS = ['party!', 'storm!', 'parade!', 'explosion!', 'dance!', 'avalanche!'];
+  let surprising = false;
+  surpriseBtn.addEventListener('click', () => {
+    if (surprising) return;
+    surprising = true; ensureCtx();
+    const pool = SHAPES.slice(1).map(x => x[0]).concat(EXTRA);
+    let pick; do { pick = pool[Math.floor(Math.random() * pool.length)]; } while (pick === shape);
+    surpriseBtn.classList.add('spin'); slotEl.hidden = false;
+    let i = 0; const total = 14;
+    const tick = () => {
+      if (i < total) {
+        slotEl.textContent = pool[Math.floor(Math.random() * pool.length)];
+        blip(380 + i * 55, 0.06); i++;
+        setTimeout(tick, 55 + i * i * 1.8);
+        return;
+      }
+      slotEl.textContent = pick; slotEl.classList.add('pop'); tada();
+      setTimeout(() => {
+        slotEl.hidden = true; slotEl.classList.remove('pop'); surpriseBtn.classList.remove('spin');
+        boom(pick); surprising = false;
+      }, 700);
+    };
+    tick();
+  });
+  function boom(pick) {
+    if (typeof endRec === 'function') endRec();
+    playId++; playing = false; stopCurrent();
+    customEl.value = '';
+    setShape(pick);
+    const mi = Math.floor(Math.random() * Math.min(MODES.length, 110));
+    setMode(mi);
+    if (Math.random() < 0.6) applyColor(SANDS[Math.floor(Math.random() * SANDS.length)][1]);
+    for (let k = 0; k < N; k++) { px[k] = Math.random(); py[k] = Math.random(); }
+    settleFrames = 150;
+    lastHz = Math.round(idxToFreq(mi));
+    hzEl.textContent = lastHz + ' Hz';
+    whatEl.textContent = 'Surprise! ' + pick + ' ' + CHEERS[Math.floor(Math.random() * CHEERS.length)];
+  }
 
   // ---------- Share picture ----------
   const NOTE = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
@@ -579,7 +1010,7 @@ input[type="text"]:focus-visible { outline: 3px solid var(--accent); outline-off
     x.restore();
     const who = nameEl.value.trim();
     const title = who ? who + "'s sound" : 'My sound';
-    x.fillStyle = sand; x.textBaseline = 'alphabetic';
+    x.fillStyle = sand === 'rainbow' ? '#FF9ECF' : sand; x.textBaseline = 'alphabetic';
     let fs = 96; x.font = fs + 'px "Bagel Fat One", "Trebuchet MS", sans-serif';
     while (x.measureText(title).width > W - 160 && fs > 40) { fs -= 4; x.font = fs + 'px "Bagel Fat One", "Trebuchet MS", sans-serif'; }
     x.fillText(title, ox, oy + P + 130);
